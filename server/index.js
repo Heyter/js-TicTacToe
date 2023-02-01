@@ -17,12 +17,12 @@ io.on('connection', (client) => {
 	console.log(client.id, 'connection');
 
 	client.on('game:auth', function (token) {
-		if (!(token?.length > 9)) {
-			token = Date.now().toString(36) + Math.floor(powValue + Math.random() * 9 * powValue).toString(36) + client.id;
-			client.emit('game:token', token);
-		}
-
 		if (!client.token) {
+			if (!(token?.length > 9)) {
+				token = Date.now().toString(36) + Math.floor(powValue + Math.random() * 9 * powValue).toString(36) + client.id;
+				client.emit('game:token', token);
+			}
+
 			client.token = token;
 
 			TicTacToe.reconnectToGame(client);
