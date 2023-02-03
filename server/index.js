@@ -9,7 +9,7 @@ const io = new Server(server);
 
 global.socket_io = io;
 
-app.use(express.static('client'));
+app.use(express.static('public'));
 
 const powValue = Math.pow(10, 12);
 

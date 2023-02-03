@@ -1,22 +1,25 @@
 {
 	"name": "tic-tac-toe",
+	"private": true,
 	"version": "1.0.0",
-	"description": "",
-	"main": "server/index.js",
 	"type": "module",
+	"proxy": "http://localhost:3000",
 	"scripts": {
-		"server": "nodemon server/index.js"
+		"dev": "vite",
+		"build": "vite build",
+		"server": "node ./server/index.js"
 	},
-	"author": "",
-	"license": "ISC",
 	"dependencies": {
 		"express": "^4.18.2",
-		"socket.io": "^4.5.4"
-	},
-	"nodemonConfig": {
-		"ignore": ["client/*"]
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"socket.io": "^4.5.4",
+		"socket.io-client": "^4.5.4"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.20"
+		"@types/react": "^18.0.26",
+		"@types/react-dom": "^18.0.9",
+		"@vitejs/plugin-react": "^3.0.0",
+		"vite": "^4.0.0"
 	}
 }
