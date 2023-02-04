@@ -212,7 +212,7 @@ class Game {
 		);
 	}
 
-	// Credits :: https://jayeshkawli.ghost.io/tic-tac-toe/
+	// Fast algorithm https://jayeshkawli.ghost.io/tic-tac-toe/
 	makeMove(client, id) {
 		if (this.hasWinner) return false;
 		if (this.slots[id] !== 0) return false;
@@ -229,19 +229,17 @@ class Game {
 		const row = Math.floor(id % sizeOfBoard);
 		const column = Math.floor(id / sizeOfBoard);
 
-		// Populate all the containers based on the marked position
 		player.rowsContainer[row] += 1;
 		player.columnsContainer[column] += 1;
 
-		// Now check for win across either direction
+		// Win across row
 		if (player.rowsContainer[row] === sizeOfBoard) {
-			// Win across row
 			this.makeWin(turn, 1, id);
 			return false;
 		}
 
+		// Win across column
 		if (player.columnsContainer[column] === sizeOfBoard) {
-			// Win across column
 			this.makeWin(turn, 2, id);
 			return false;
 		}
@@ -255,22 +253,25 @@ class Game {
 			0
 		);
 
+		// Win across regular diagonal
 		if (sumForRegularDiagonalElements === sizeOfBoard) {
-			// Win across regular diagonal
 			this.makeWin(turn, 3, id);
 			return false;
 		}
 
+		// Win across opposite diagonal
 		if (sumForOppositeDiagonalElements === sizeOfBoard) {
-			// Win across opposite diagonal
 			this.makeWin(turn, 4, id);
 			return false;
 		}
 
-		const sumForDraw = this.slots.reduce((a, b) => a + b, 0);
+		const sumForDraw = this.slots.reduce(
+			(counter, value) => counter + (value !== 0 ? 1 : 0),
+			0
+		);
 
 		// No winner
-		if (sumForDraw === sizeOfBoard * sizeOfBoard) {
+		if (sumForDraw >= sizeOfBoard * sizeOfBoard) {
 			this.makeWin(turn, -1, id);
 			return false;
 		}

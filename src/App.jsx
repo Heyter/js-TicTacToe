@@ -1,6 +1,7 @@
 import { createRef, Component } from 'react';
 import io from 'socket.io-client';
 import './App.css';
+import Notification from './components/Notification.jsx';
 
 class App extends Component {
 	constructor() {
@@ -23,6 +24,7 @@ class App extends Component {
 				autoConnect: false,
 				reconnectionAttempts: 3,
 			}),
+			notify: [],
 		};
 
 		this.handleStartButton = this.handleStartButton.bind(this);
@@ -91,8 +93,8 @@ class App extends Component {
 				slots: this.state.slots,
 			});
 
-			if (winId !== -1) console.log('Win', turn);
-			else console.log('Draw');
+			if (winId !== -1) this.addNotify(turn + ' Won', 'forestgreen');
+			else this.addNotify('Draw');
 		});
 
 		socket.on('game:turn', (oldTurn, curTurn, id) => {
@@ -106,7 +108,8 @@ class App extends Component {
 		});
 
 		socket.on('game:disconnect', (token) => {
-			if (this.state.token !== token) console.log('Opponent left the game');
+			if (this.state.token !== token)
+				this.addNotify('Opponent left the game', 'lightskyblue');
 
 			this.setState({
 				founded: false,
@@ -171,6 +174,31 @@ class App extends Component {
 				state.moveTimer = Date.now() + 5000;
 				state.socket.emit('game:move', idx);
 			}
+		}
+	}
+
+	addNotify(text, color, autoClose) {
+		this.setState({
+			notify: [
+				...this.state.notify,
+				{
+					color: color,
+					autoClose: autoClose,
+					text: text,
+				},
+			],
+		});
+	}
+
+	removeNotify(id) {
+		const notify = this.state.notify;
+
+		if (notify[id]) {
+			notify.splice(id, 1);
+
+			this.setState({
+				notify: [...notify],
+			});
 		}
 	}
 
@@ -267,6 +295,20 @@ class App extends Component {
 						</button>
 					))}
 				</section>
+
+				{state.notify.length !== 0 && (
+					<div className="notify-container">
+						{state.notify.map((value, idx) => (
+							<Notification
+								color={value.color}
+								text={value.text}
+								autoClose={value.autoClose}
+								key={`notify_${idx}`}
+								onDelete={() => this.removeNotify(idx)}
+							/>
+						))}
+					</div>
+				)}
 			</div>
 		);
 	}
